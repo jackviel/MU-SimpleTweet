@@ -36,6 +36,7 @@ public class TimelineActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 20;
 
     private SwipeRefreshLayout swipeContainer;
+    private MenuItem miActionProgressItem;
 
     TwitterClient client;
     RecyclerView rvTweets;
@@ -94,6 +95,25 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             // Get data from the intent (tweet)
@@ -116,8 +136,10 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.i(TAG, "onSuccess!" + json.toString());
                 JSONArray jsonArray = json.jsonArray;
                 try {
+                    showProgressBar();
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyDataSetChanged();
+                    hideProgressBar();
                 } catch (JSONException e) {
                     Log.e(TAG, "Json exception", e);
                 }
