@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
@@ -50,6 +52,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvBody;
         TextView tvScreenName;
         ImageView ivTweetImage;
+        TextView tvTimeAgo;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -57,11 +60,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById((R.id.tvScreenName));
             ivTweetImage = itemView.findViewById(R.id.ivTweetImage);
+            tvTimeAgo = itemView.findViewById(R.id.tvTimeAgo);
         }
 
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
+            tvTimeAgo.setText(tweet.timeAgo);
             Glide.with(context).load(tweet.user.publicImageUrl).into(ivProfileImage);
             Glide.with(context).load(tweet.imageUrl).into(ivTweetImage);
         }
