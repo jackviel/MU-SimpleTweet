@@ -49,7 +49,7 @@ GIF created with [Kap](https://getkap.co/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Had difficulty knowing when and how to launch intents and activities depending on the type of item, also had difficulty with styling. 
 
 ## Open-source libraries used
 
