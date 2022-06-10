@@ -20,6 +20,7 @@ public class Tweet {
     public User user;
     public String imageUrl;
     public String timeAgo;
+    public long id;
 
     public Tweet(){}
 
@@ -30,6 +31,7 @@ public class Tweet {
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.imageUrl = getImgUrl(jsonObject);
         tweet.timeAgo = getRelativeTimeAgo(tweet.createdAt);
+        tweet.id = jsonObject.getLong("id");
         return tweet;
     }
 

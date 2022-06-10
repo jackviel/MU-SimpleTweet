@@ -58,7 +58,7 @@ public class TimelineActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchTimelineAsync(0);
+                fetchTimelineAsync();
             }
         });
 
@@ -74,7 +74,7 @@ public class TimelineActivity extends AppCompatActivity {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                 Log.d("scroll listener", "WORKING!!");
-                fetchTimelineAsync(page + 1);
+                loadNextDataFromApi();
             }
         };
 
@@ -92,14 +92,29 @@ public class TimelineActivity extends AppCompatActivity {
 
     // Append the next page of data into the adapter
     // This method probably sends out a network request and appends new data items to your adapter.
-    public void loadNextDataFromApi(int offset) {
-        // Send an API request to retrieve appropriate paginated data
-        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
-        //  --> Deserialize and construct new model objects from the API response
-        //  --> Append the new data objects to the existing set of items inside the array of items
-        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+    public void loadNextDataFromApi() {
+        client.getMoreTweets(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JsonHttpResponseHandler.JSON json) {
+                Log.i(TAG, "onSuccess!" + json.toString());
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    showProgressBar();
+                    tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    adapter.notifyDataSetChanged();
+                    hideProgressBar();
+                } catch (JSONException e) {
+                    Log.e(TAG, "Json exception", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e(TAG, "onFailure!" + response, throwable);
+            }
+        } , tweets.get(tweets.size()-1).id);
     }
-    public void fetchTimelineAsync(int page){
+    public void fetchTimelineAsync(){
         swipeContainer.setRefreshing(true);
         adapter.clear();
         populateHomeTimeline();
